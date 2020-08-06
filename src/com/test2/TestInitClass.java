@@ -2,9 +2,9 @@ package com.test2;
 
 import java.util.Arrays;
 
-public class Test1 {
+public class TestInitClass {
 	
-	public Test1() {
+	public TestInitClass() {
 		System.out.println("----------");
 	}
 	static class Test2 {

@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ADA {
+public class TestVolatile {
 	
 	static {
 		System.out.println("1231231");
@@ -29,7 +29,7 @@ public class ADA {
 	}
 
 	public static void main(String[] args) {
-		ADA threadSafeCache = new ADA();
+		TestVolatile threadSafeCache = new TestVolatile();
 		for (int i = 0; i < 8; i++) {
 			new Thread(() -> {
 				int x = 0;

@@ -3,14 +3,14 @@ package com.test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ADA1 {
+public class TestVolatile2 {
 	
     class InnerA{
 		int i;
 	}
 	
     public static void main(String[] args) {
-    	ADA1 a1 = new ADA1();
+    	TestVolatile2 a1 = new TestVolatile2();
     	InnerA a = a1.new InnerA();
     }
 	

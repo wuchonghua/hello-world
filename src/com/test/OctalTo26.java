@@ -1,10 +1,10 @@
-package com.xhdl.it.xhms.device.service.impl;
+package com.test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-public class A {
+public class OctalTo26 {
 	private static Map<Integer,Character> m = new HashMap<>();
 	
 	static {

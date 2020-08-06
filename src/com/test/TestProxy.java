@@ -13,4 +13,10 @@ public class TestProxy {
 	public void staticProxy() {
 		new ChifanProxy(new ChifanImpl()).chifan();
 	}
+	
+	@Test
+	public void createClass() {
+		//System.out.println(((Interface)ProxyFactory.createProxy2(Interface.class)).name());
+	}
+	
 }

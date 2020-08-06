@@ -1,6 +1,6 @@
 package com.test;
 
-public interface XX {
+public interface Interface {
 
 	int name();
 }

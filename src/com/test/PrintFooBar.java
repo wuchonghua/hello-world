@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-public class AAAAA {
+public class PrintFooBar {
 	
 	public static void main(String[] args) throws InterruptedException {
-		AAAAA a = new AAAAA();
+		PrintFooBar a = new PrintFooBar();
 		FooBar f = a.new FooBar(2);
 		PrintBar pb = a.new PrintBar();
 		PrintFoo pf = a.new PrintFoo();
