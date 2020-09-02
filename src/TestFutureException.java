@@ -1,6 +1,7 @@
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 public class TestFutureException {
 	
@@ -8,7 +9,6 @@ public class TestFutureException {
 		Future f = Executors.newFixedThreadPool(5).submit(() -> {
 			return 1;
 		});
-		
 		try {
 			System.out.println(f.get());
 		} catch (InterruptedException | ExecutionException e) {
