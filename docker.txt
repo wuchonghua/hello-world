@@ -1,0 +1,12 @@
+virtual box 类似VMware一样 运行虚拟机的工具
+Hyper-V 运行虚拟机的工具 
+
+docker toolbox 和 docker for windows  
+  docker for windows用Hyper-V运行linux
+  docker toolbox 用 virtual box运行 linux
+boot2docker 上述linux的镜像文件
+
+docker封装了linux的容器技术，运行在linux系统上，提供对linux容器操作的接口
+容器技术简化了部署，解决了“在我的电脑上可以运行”的问题.
+项目打包时将所依赖的环境一起打包，使开发-测试-生产环境依赖于相同的环境
+

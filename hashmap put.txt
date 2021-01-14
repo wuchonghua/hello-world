@@ -1,0 +1,84 @@
+hashmap put 1.8
+   调用putVal方法  putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict)    倒数第二个参数为是否覆盖原值  absent:缺席的
+   使用hash(key)方法获取第一个参数   key为null 该方法返回0 所以可以存null键
+   
+   如果第一次调用该方法  先初始化table  
+   将hash和table.length-1进行与运算  获得存储的下标i
+   如果table中该下标为null,说明这是没有冲突的情况  直接tab[i] = new Node(hash,key,value,null);  最后一个参数为next节点
+   否则 说明hash冲突或者之前put过相同的键
+        判断table[i]中的第一个Node
+                p.hash == hash && ((k = p.key) == key || (key != null && key.equals(k)))  为true说明当前put的值和第一个Node key相同
+		否则判断table[i]中的节点是不是TreeNode红黑树节点   putTreeVal
+		否则从table[i]中的第二个Node开始遍历   
+		     如果遍历过程中Node为空了
+			     没有put过 为链表的当前空节点赋值  p.next = newNode(hash, key, value, null);
+				 判断当前是否遍历到第九个链表节点或以上  
+				   调用treeifyBin方法
+				       判断当前table.length是否大于64 
+					   如果大于64将链表转为红黑树,
+					   如果不大于64 扩容table
+		     如果遍历过程中节点的键equals(put的键),说明之前put过
+		 
+		判断有没有put过,如果put过    // PS:个人理解:其实可以把第一个判断逻辑和第三个逻辑合并，把这段逻辑放在20行的逻辑里 然后return
+		   替换为新值
+		   返回旧值
+	
+	程序运行至此 说明hashmap中没有该键
+	modcount++
+	size++
+	判断size是否大于扩容阈值
+	   扩容
+	返回null
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+ConcurrentHashMap 1.7    
+   Segment数组  HashEntry数组  一个二维数组   二维数组中是一个链表（HashEntry）
+     put时先定位到Segment上  s = (Segment<K,V>)UNSAFE.getObject(segments, (j << SSHIFT) + SBASE) 这里没有用volatile读是因为如果Segment已经初始化，后续不会对它的reference进行更改，如果没有初始化，会在ensureSegment()中进行volatile读校验
+     然后对该Segment尝试进行加锁，失败后会自旋tryLock一定次数，如果还没获取到锁，调用lock阻塞，等待获取锁。
+	 获取锁之后，接着put过程就和HashMap差不多了，hash之后定位到HashEntry数组的下标，然后用链地址法放入元素。最后在finally中释放锁。
+	 因为每次只锁住一个Segment，所以多个Segment的put可以并发执行。最多支持Segment数组长度的并发数。
+	 
+	 在说get前首先提一点：Segment的table属性是volatile的，HashEntry的value和next属性是volatile的，对于一个volatile变量的写操作先行发生于之后对该volatile变量的读操作
+	 get操作不会获取锁。这可能会导致前一个线程修改了map对另一个线程不会立即可见。
+	 首先定位到Segment，这里用volatile读Segment，保证并发read和write时Segment已经初始化但对其他线程不可见的问题。s.table是volatile的，另一个线程初始化了之后，此线程可见
+		if ((s = (Segment<K,V>)UNSAFE.getObjectVolatile(segments, u)) != null &&
+			(tab = s.table) != null) {
+			// volatile修饰的对象或数组而言，其含义是对象或数组的引用具有可见性，但是数组或对象内部的成员改变不具备可见性。 
+			// 但是If Thread A reads a volatile variable, then all all variables visible to Thread A when reading the volatile variable will also be re-read from main memory
+			// 所以这里volatile地读HashEntry数组中的元素可能是多此一举了  
+			// volatile的value和next保证了别的线程修改Entry后对此线程立即可见
+			for (HashEntry<K,V> e = (HashEntry<K,V>) UNSAFE.getObjectVolatile
+					 (tab, ((long)(((tab.length - 1) & h)) << TSHIFT) + TBASE);
+				 e != null; e = e.next) {
+				K k;
+				if ((k = e.key) == key || (e.hash == h && key.equals(k)))
+					return e.value;
+			}
+		}
+    
+	 size分两步，
+	 第一个步遍历所有的segment,累加modCount和count，如果前后两次遍历累加的modCount得到一样的值，就返回累加的count。
+	 如果重试次数==RETRIES_BEFORE_LOCK（第三次循环满足此条件，也就是比较两次都不一致后），会锁住所有的segment，并进行上一步的计算。此循环最多执行5次
+		
+
+	 
+	 
+     
+   
+   
+   
+   
+   
+   
+   
+   
